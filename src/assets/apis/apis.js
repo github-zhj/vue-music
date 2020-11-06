@@ -3,7 +3,7 @@ import {get} from './http.js'
 export const Banner = params => get('/api/banner', params);
 
 // export const MusicNav = params => get('/api/top/playlist/highquality', params);
-export const MusicNav = params => get('/api/personalized/newsong', params);
+export const MusicNav = params => get('/api/personalized/newsong?limit=21', params);
 
 export const NewMusic = params => get('/api/personalized/newsong', params);
 
