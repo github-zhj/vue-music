@@ -22,3 +22,6 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### 请自行下载网易云API
+https://github.com/Binaryify/NeteaseCloudMusicApi
