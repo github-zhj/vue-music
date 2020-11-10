@@ -8,7 +8,8 @@ export default new Vuex.Store({
     messageString: {},
     time: {},
     playbarTime: {},
-    onPlay:{}
+    onPlay:{},
+  
   },
   mutations: {
     messageString(state, messageString) { //设置参数
@@ -22,7 +23,6 @@ export default new Vuex.Store({
     },
     onPlay(state, onPlay) { //设置参数
       state.onPlay = onPlay;
-      console.log(onPlay.bool)
     },
   },
   actions: {

@@ -32,6 +32,9 @@
     <div class="comment iconfont icon-pinglun" @click="OpenComment"></div>
     <audio class="audio" @timeupdate="updateTime" @ended="NextMusic()" ref="player" :src="MusicUrl"
       autoplay="autoplay"></audio>
+    <div class="like" @click="Liked">
+      <van-icon name="like-o" size="28" :color="color" />
+    </div>
     <div class="progressz">
 
       <div data-v-ccdcf386="" class="van-slider">
@@ -66,6 +69,8 @@
   export default {
     data() {
       return {
+        likedColor: false,
+        color: "#000000",
         values: '',
         value: 0,
         light: 0,
@@ -87,7 +92,8 @@
         seconds: 0,
         minutes: 0,
         DurationMinutes: 0,
-        DurationSeconds: 0
+        DurationSeconds: 0,
+        like: []
       };
     },
 
@@ -99,8 +105,8 @@
       if (localStorage.getItem("播放记录")) {
         this.save = JSON.parse(localStorage.getItem("播放记录"))
       }
-      this.getSellerDataFromBanner();
 
+      this.getSellerDataFromBanner();
     },
 
     mounted() {
@@ -131,7 +137,7 @@
                 this.$store.commit("messageString", {
                   url: result.data.data[0].url,
                   pir: this.$route.query.pir,
-                  id: this.$route.query.id
+                  id: this.$route.query.id,
                 })
               }
             }),
@@ -215,14 +221,32 @@
       },
 
       updateLyric() {
-        let lyricUL = document.getElementsByClassName('lyriul')[0]
+        let lyricUL = document.getElementsByClassName('lyriul')[0];
+        if (lyricUL) {
         this.lyricArr.forEach((item, index) => {
           if (parseInt(item.time) <= this.currentTime) {
             this.light = index;
             lyricUL.style.transform = `translateY(${170 - (30 * (index + 1))}px)`
           }
         });
+        }
       }, //歌词滚动
+
+      Liked() {
+        this.likedColor = !this.likedColor
+        this.color = this.likedColor ? "red" : "#000000"
+     
+        if (this.likedColor) {
+          this.like.push({
+            id: this.lyricID,
+            name: this.title,
+
+          });
+          localStorage.setItem("喜欢", JSON.stringify(this.like))
+        }
+
+
+      },
 
       updateProgress(currentTime, duration) {
         // 更新进度条
@@ -339,7 +363,6 @@
     computed: {
       lyricArr() {
         let arr = this.Songlyric.split(/\n/);
-        // 正则组匹配
         return arr.map((l) => {
           /\[(\d+):(\d+\.\d+)\](.+)/.test(l);
           return {
@@ -521,6 +544,12 @@
       font-size: 30px;
       position: absolute;
       right: 20px;
+      bottom: 80px;
+    }
+
+    .like {
+      position: absolute;
+      left: 20px;
       bottom: 80px;
     }
 

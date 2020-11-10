@@ -1,6 +1,6 @@
-import { Tabbar, TabbarItem, Search, Swipe, SwipeItem, Toast, Slider, Form, Field, Button, ActionSheet, CellGroup } from 'vant'
+import { Icon, Tabbar, TabbarItem, Search, Swipe, SwipeItem, Toast, Slider, Form, Field, Button, ActionSheet, CellGroup } from 'vant'
 
-const vants = [Tabbar, TabbarItem, Search, Swipe, SwipeItem, Toast, Slider, Form, Field, Button, ActionSheet, CellGroup]
+const vants = [Icon, Tabbar, TabbarItem, Search, Swipe, SwipeItem, Toast, Slider, Form, Field, Button, ActionSheet, CellGroup]
 
 export default {
     /**

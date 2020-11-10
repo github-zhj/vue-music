@@ -54,6 +54,7 @@
 
 
         },
+        
         computed: {
             ...mapState({
                 messageString: state => state.messageString
@@ -61,7 +62,7 @@
             ...mapState({
                 time: state => state.time
             }),
-             ...mapState({
+            ...mapState({
                 onPlay: state => state.bool
             })
         },
@@ -86,7 +87,7 @@
         right: 5px;
         background: #ffffff;
         background: url("../assets/imgs/music.png") no-repeat;
-         background-size:40px 40px;  
+        background-size: 40px 40px;
         border-radius: 50%;
         overflow: hidden;
 
