@@ -15,12 +15,12 @@
         <li><span class="iconfont">&#xe684;</span>关于我们</li>
       </ul>
     </div>
-    <FootNav />
+    <!-- <FootNav /> -->
   </div>
 </template>
 
 <script>
-  import FootNav from "../components/FootNav";
+  // import FootNav from "../components/FootNav";
 
   export default {
     data() {
@@ -29,9 +29,9 @@
         bool: true
       }
     },
-    components: {
-      FootNav,
-    },
+    // components: {
+    //   FootNav,
+    // },
     created() {
       this.LoginClick()
     },

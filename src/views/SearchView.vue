@@ -1,7 +1,7 @@
 <template>
   <div>
-    <van-search class="search" @search="onSearch" @input="SearchDel" v-model="value" shape="round" background="#d43c33"
-      placeholder="请输入搜索歌曲" />
+      <van-search class="search" @search="onSearch" @input="SearchDel" v-model="value" shape="round"
+        background="#d43c33" placeholder="请输入搜索歌曲" />
     <div class="wrapper" v-show="hidden">
       <div class="history-wrapper">
         <h2 class="history">搜索历史</h2>
@@ -19,15 +19,14 @@
     <div class="mask" v-show="!hidden">
       <ul>
         <li class="search-list-content" v-for="(item,index) in searchDel" :key="index"
-          @click="MusicClick(item.id,item.pir,item.title)"><i class="iconfont icon-sousuo"></i>{{item.name}} <span>{{item.artists[0].name}}</span></li>
+          @click="MusicClick(item.id,item.pir,item.title)"><i class="iconfont icon-sousuo"></i>{{item.name}}
+          <span>{{item.artists[0].name}}</span></li>
       </ul>
     </div>
-    <FootNav />
   </div>
 </template>
 
 <script>
-  import FootNav from "../components/FootNav";
   import {
     HotSearch
   } from "../assets/apis/apis.js";
@@ -74,7 +73,6 @@
           title: this.searchDel[0].name
         });
         localStorage.setItem("搜索历史", JSON.stringify(this.history))
-        // console.log(localStorage.getItem("搜索历史"))
       },
       SearchDel(val) {
         if (val) {
@@ -84,15 +82,14 @@
           }).then((result) => {
             if (result.data.code === 200) {
               this.searchDel = result.data.result.songs
-              console.log(result.data.result.songs, 6666)
             }
           })
         }
-          
+
       },
       RemoveLocal() {
-         localStorage.removeItem('搜索历史')
-         window.location.reload()
+        localStorage.removeItem('搜索历史')
+        // window.location.reload()
       },
       onLoad() {
         HotSearch().then((res) => {
@@ -120,12 +117,8 @@
           this.hidden = true
         }
       },
-        
-    },
-    components: {
-      FootNav,
-    },
 
+    },
 
   };
 </script>
@@ -186,6 +179,7 @@
     line-height: 40px;
     font-size: 18px;
     padding-left: 20px;
+
     span {
       justify-content: flex-start;
     }

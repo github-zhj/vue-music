@@ -105,7 +105,8 @@
       if (localStorage.getItem("播放记录")) {
         this.save = JSON.parse(localStorage.getItem("播放记录"))
       }
-
+      //隐藏导航
+      this.$store.state.vanTabbar = false;
       this.getSellerDataFromBanner();
     },
 
@@ -120,6 +121,11 @@
       //   this.updateLyric()
       // })
     },
+
+    beforeDestroy() {
+      this.$store.state.vanTabbar = true;
+    },
+    
     methods: {
       getSellerDataFromBanner() {
         setTimeout(() => {
@@ -223,19 +229,19 @@
       updateLyric() {
         let lyricUL = document.getElementsByClassName('lyriul')[0];
         if (lyricUL) {
-        this.lyricArr.forEach((item, index) => {
-          if (parseInt(item.time) <= this.currentTime) {
-            this.light = index;
-            lyricUL.style.transform = `translateY(${170 - (30 * (index + 1))}px)`
-          }
-        });
+          this.lyricArr.forEach((item, index) => {
+            if (parseInt(item.time) <= this.currentTime) {
+              this.light = index;
+              lyricUL.style.transform = `translateY(${150 - (30 * (index + 1))}px)`
+            }
+          });
         }
       }, //歌词滚动
 
       Liked() {
         this.likedColor = !this.likedColor
         this.color = this.likedColor ? "red" : "#000000"
-     
+
         if (this.likedColor) {
           this.like.push({
             id: this.lyricID,
@@ -358,7 +364,8 @@
           this.$toast.fail('请先登录再评论');
         }
         return this.values = ""
-      }
+      },
+
     },
     computed: {
       lyricArr() {

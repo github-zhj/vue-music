@@ -9,7 +9,7 @@ export default new Vuex.Store({
     time: {},
     playbarTime: {},
     onPlay:{},
-  
+    vanTabbar:true
   },
   mutations: {
     messageString(state, messageString) { //设置参数
