@@ -15,23 +15,20 @@
         <li><span class="iconfont">&#xe684;</span>关于我们</li>
       </ul>
     </div>
-    <!-- <FootNav /> -->
+
   </div>
 </template>
 
 <script>
-  // import FootNav from "../components/FootNav";
-
   export default {
     data() {
       return {
         title: "登陆/注册",
+        imgUrl: "https://static.wanplus.com/2019/1/7/154683014500045.jpg",
         bool: true
       }
     },
-    // components: {
-    //   FootNav,
-    // },
+
     created() {
       this.LoginClick()
     },
@@ -39,7 +36,8 @@
       LoginClick() {
         if (localStorage.getItem("登陆成功")) {
           this.bool = true
-          this.title = "kirito"
+          this.title = localStorage.getItem("注册用户")
+          localStorage.setItem("用户头像", this.imgUrl)
         } else {
           this.$router.push({
             path: "/login",
@@ -69,7 +67,7 @@
       width: 100px;
       height: 100px;
       position: absolute;
-      top: 48px;   
+      top: 48px;
       background: #ffffff;
       border-radius: 50%;
       overflow: hidden;

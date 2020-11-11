@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
-    <van-action-sheet v-model="show" title="热门评论">
+    <!-- 评论别表 -->
+    <van-action-sheet v-model="CommentShow" title="热门评论">
       <div class="content" v-for="(item,index) in comments" :key="index">
         <div class="content-img"><img :src="item.user.avatarUrl"></div>
         <i class="nickname">{{item.user.nickname}}</i>
@@ -13,6 +14,16 @@
           @keyup.enter="publish" />
       </van-cell-group>
     </van-action-sheet>
+
+    <!-- 歌单列表 -->
+    <van-action-sheet v-model="PlayListShow" title="歌单列表">
+      <div class="play-list-content" v-for="(item,index) in playList" :key="index">
+        <div class="play-list-content-title" @click="MusicClick(item)">{{item.name}}
+          <span class="iconfont icon-bofang"></span></div>
+      </div>
+
+    </van-action-sheet>
+    <!-- 背景图 -->
     <div class="bg-blur" :style="`background-image:url(${img})`"></div>
     <Back />
     <h2 class="music_title">{{ title }}</h2>
@@ -29,9 +40,11 @@
         </ul>
       </div>
     </div>
+    <!-- 评论按钮 -->
     <div class="comment iconfont icon-pinglun" @click="OpenComment"></div>
-    <audio class="audio" @timeupdate="updateTime" @ended="NextMusic()" ref="player" :src="MusicUrl"
-      autoplay="autoplay"></audio>
+    <!-- 歌单列表按钮 -->
+    <div class="play-list iconfont icon-bofangliebiao" @click="OpenPlaylist"></div>
+    <audio class="audio" @timeupdate="updateTime" @ended="NextMusic()" ref="player" :src="MusicUrl" autoplay></audio>
     <div class="like" @click="Liked">
       <van-icon name="like-o" size="28" :color="color" />
     </div>
@@ -46,7 +59,7 @@
           </div>
         </div>
       </div>
-      <!-- console.log(minutes,seconds) -->
+
 
       <div class="percent">{{minutes}}:{{seconds}}</div>
       <div class="total_time">{{DurationMinutes}}:{{DurationSeconds}}</div>
@@ -74,7 +87,8 @@
         values: '',
         value: 0,
         light: 0,
-        show: false,
+        CommentShow: false,
+        PlayListShow: false,
         precent: 0,
         duration: 0,
         bool: true,
@@ -88,12 +102,12 @@
         Songlyric: "",
         save: [],
         comments: [],
+        playList: [],
         idIndex: 0,
         seconds: 0,
         minutes: 0,
         DurationMinutes: 0,
         DurationSeconds: 0,
-        like: []
       };
     },
 
@@ -108,24 +122,28 @@
       //隐藏导航
       this.$store.state.vanTabbar = false;
       this.getSellerDataFromBanner();
+      let playList = JSON.parse(localStorage.getItem("播放记录"))
+      let playListContent = []
+      for (let i = 0; i < playList.length; i++) {
+        if (playList[i].name) {
+          playListContent.push(playList[i]) 
+        }
+      }
+      this.playList = playListContent
     },
 
     mounted() {
-
       this.$nextTick(() => {
         if (this.playbarTime.time && this.playbarTime.id === this.$route.query.id) {
           this.$refs.player.currentTime = this.playbarTime.time
         }
       })
-      // this.$nextTick(() => {
-      //   this.updateLyric()
-      // })
     },
 
     beforeDestroy() {
       this.$store.state.vanTabbar = true;
     },
-    
+
     methods: {
       getSellerDataFromBanner() {
         setTimeout(() => {
@@ -232,7 +250,7 @@
           this.lyricArr.forEach((item, index) => {
             if (parseInt(item.time) <= this.currentTime) {
               this.light = index;
-              lyricUL.style.transform = `translateY(${150 - (30 * (index + 1))}px)`
+              lyricUL.style.transform = `translateY(${190 - (30 * (index + 1))}px)`
             }
           });
         }
@@ -241,17 +259,6 @@
       Liked() {
         this.likedColor = !this.likedColor
         this.color = this.likedColor ? "red" : "#000000"
-
-        if (this.likedColor) {
-          this.like.push({
-            id: this.lyricID,
-            name: this.title,
-
-          });
-          localStorage.setItem("喜欢", JSON.stringify(this.like))
-        }
-
-
       },
 
       updateProgress(currentTime, duration) {
@@ -282,8 +289,8 @@
           if (this.$refs.cd.classList.contains("pause")) {
             this.$refs.cd.classList.remove("pause");
           }
-
           audio.play(); //audio.play();// 这个就是播放
+
         } else {
           this.$refs.cd.classList.add("pause");
           audio.pause(); // 这个就是暂停
@@ -329,11 +336,15 @@
 
       reset() {
         let audio = this.$refs.player;
-        audio.currentTime = 0;
+        audio.load();
       },
 
       OpenComment() {
-        this.show = !this.show
+        this.CommentShow = !this.CommentShow
+      },
+
+      OpenPlaylist() {
+        this.PlayListShow = !this.PlayListShow
       },
 
       isGood(e) {
@@ -351,13 +362,13 @@
             return;
           }
           this.comments.push({
-            id: "kirito",
+            id: localStorage.getItem("注册用户"),
             content: this.values,
             liked: false,
             likedCount: 0,
             user: {
-              "nickname": "kirito",
-              "avatarUrl": " https://static.wanplus.com/2019/1/7/154683014500045.jpg "
+              "nickname": localStorage.getItem("注册用户"),
+              "avatarUrl": localStorage.getItem("用户头像")
             }
           })
         } else {
@@ -366,6 +377,20 @@
         return this.values = ""
       },
 
+      // 歌单跳转
+      MusicClick(val) {
+        this.$refs.player.src = val.url;
+        this.img = val.pir
+        this.Songlyric = val.lyric
+        this.title = val.name
+         this.$store.commit("messageString", {
+          url: val.url,
+          pir: val.pir,
+          name: val.name,
+          id: val.id,
+        })
+        this.PlayListShow = false;
+      }
     },
     computed: {
       lyricArr() {
@@ -447,6 +472,16 @@
         }
       }
 
+    }
+
+    .play-list-content {
+      padding: 10px 10px;
+
+
+      .play-list-content-title {
+        padding-bottom: 5px;
+        border-bottom: 1px solid #e3e3e3;
+      }
     }
 
     .publish {
@@ -551,6 +586,13 @@
       font-size: 30px;
       position: absolute;
       right: 20px;
+      bottom: 82px;
+    }
+
+    .play-list {
+      font-size: 30px;
+      position: absolute;
+      right: 60px;
       bottom: 80px;
     }
 

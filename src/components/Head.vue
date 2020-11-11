@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="wrapper">
-      <h1>Music</h1>
+      <h1><i class="icon"><van-icon name="audio"/></i>Music</h1>
       <Playbar />
     </div>
   </div>
@@ -26,10 +26,16 @@
     text-align: center;
     background-color: #d43c33;
   }
-
+    
   h1 {
     font-weight: 600;
     font-size: 20px;
     color: #e3e3e3;
+    height: 20px;
+
+    .icon {
+      position: relative;
+      top: 2px;
+    }
   }
 </style>

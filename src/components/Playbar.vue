@@ -31,6 +31,7 @@
                     this.$refs.play.currentTime = this.time.time
                 }
             })
+            
         },
         methods: {
             MusicClick() {
@@ -67,14 +68,6 @@
             })
         },
 
-        // watch: {
-        //     messageString(currVal) {
-        //         // 监听mapState中的变量，当数据变化（有值、值改变等），
-        //         // 保证能拿到完整的数据，不至于存在初始化没有数据的问题，然后可以赋给本组件data中的变量
-        //         // this.currVal = currVal;
-        //         console.log("----",currVal)
-        //     }
-        // }
     }
 </script>
 
