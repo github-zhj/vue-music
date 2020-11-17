@@ -1,5 +1,7 @@
 <template>
+  <!-- <v-touch v-on:swipeleft="swiperleft" v-on:swiperight="swiperright"> -->
   <div class="wrapper">
+
     <!-- 评论别表 -->
     <van-action-sheet v-model="CommentShow" title="热门评论">
       <div class="content" v-for="(item,index) in comments" :key="index">
@@ -48,6 +50,8 @@
     <div class="like" @click="Liked">
       <van-icon name="like-o" size="28" :color="color" />
     </div>
+
+    <!-- 播放进度条 -->
     <div class="progressz">
 
       <div data-v-ccdcf386="" class="van-slider">
@@ -72,6 +76,8 @@
       <span @click="reset" class="icon-loop"></span>
     </div>
   </div>
+  <!-- </v-touch> -->
+
 </template>
 
 <script>
@@ -112,24 +118,35 @@
     },
 
     components: {
-      Back
+      Back,
     },
 
     created() {
       if (localStorage.getItem("播放记录")) {
         this.save = JSON.parse(localStorage.getItem("播放记录"))
       }
+
       //隐藏导航
       this.$store.state.vanTabbar = false;
       this.getSellerDataFromBanner();
-      let playList = JSON.parse(localStorage.getItem("播放记录"))
+      let playList = JSON.parse(localStorage.getItem("__favorite__"))
       let playListContent = []
       for (let i = 0; i < playList.length; i++) {
         if (playList[i].name) {
-          playListContent.push(playList[i]) 
+          playListContent.push(playList[i])
         }
       }
       this.playList = playListContent
+      if (localStorage.getItem('__favorite__')) {
+        let favorite = JSON.parse(localStorage.getItem('__favorite__'))
+
+        for (let i = 0; i < favorite.length; i++) {
+          if (this.lyricID === favorite[i].id) {
+            this.likedColor = true
+            this.color = this.likedColor ? "red" : "#000000"
+          }
+        }
+      }
     },
 
     mounted() {
@@ -159,6 +176,7 @@
                 this.MusicUrl = result.data.data[0].url;
                 this.songList = result.data.result;
                 this.$store.commit("messageString", {
+                  title: this.$route.query.title,
                   url: result.data.data[0].url,
                   pir: this.$route.query.pir,
                   id: this.$route.query.id,
@@ -220,7 +238,6 @@
           time: e.target.currentTime,
         })
 
-
         // 获取总时长
 
         let DurationtimeDisplay = Math.floor(this.duration); //获取实时时间
@@ -239,7 +256,6 @@
         this.DurationSeconds = Durationseconds
 
         this.duration = e.target.duration; //有问题
-
         this.updateProgress(this.currentTime, this.duration);
         this.updateLyric()
       },
@@ -259,6 +275,30 @@
       Liked() {
         this.likedColor = !this.likedColor
         this.color = this.likedColor ? "red" : "#000000"
+        this.favorite = !this.favorite
+        if (this.likedColor) {
+          for (let i = 0; i < this.save.length; i++) {
+            if (this.save[i].id === this.lyricID) {
+              this.save.splice(i, 1)
+            }
+          }
+          this.save.push({
+            name: this.title,
+            id: this.lyricID,
+            lyric: this.Songlyric,
+            url: this.MusicUrl,
+            pir: this.img
+          });
+          localStorage.setItem("__favorite__", JSON.stringify(this.save))
+        } else {
+          for (let i = 0; i < this.save.length; i++) {
+            if (this.lyricID === this.save[i].id) {
+              this.save.splice(i, 1);
+              localStorage.setItem("__favorite__", JSON.stringify(this.save))
+            }
+          }
+
+        }
       },
 
       updateProgress(currentTime, duration) {
@@ -339,10 +379,12 @@
         audio.load();
       },
 
+      // 打开评论
       OpenComment() {
         this.CommentShow = !this.CommentShow
       },
 
+      // 打开喜欢歌曲的列表
       OpenPlaylist() {
         this.PlayListShow = !this.PlayListShow
       },
@@ -356,6 +398,7 @@
         this.goodBool = !this.goodBool
       },
 
+      // 登录后才可评论
       publish() {
         if (localStorage.getItem("登陆成功")) {
           if (this.values == "") {
@@ -383,15 +426,24 @@
         this.img = val.pir
         this.Songlyric = val.lyric
         this.title = val.name
-         this.$store.commit("messageString", {
+        this.$store.commit("messageString", {
           url: val.url,
           pir: val.pir,
           name: val.name,
           id: val.id,
         })
         this.PlayListShow = false;
-      }
+      },
+
+      swiperleft: function () {
+        this.NextMusic()
+      },
+
+      swiperright: function () {
+        this.PrevMusic()
+      },
     },
+
     computed: {
       lyricArr() {
         let arr = this.Songlyric.split(/\n/);
@@ -407,17 +459,17 @@
       ...mapState({
         playbarTime: state => state.time
       }),
-      percent() {
-        return this.duration === 0 ? 0 : ((this.currentTime / this.$refs.player.duration) * 10).toFixed(2);
-      },
+
 
     },
+
   };
 </script>
 
 
 <style lang="scss" scoped>
   .wrapper {
+
     .content {
       font-size: 16px;
       font-weight: 100;
@@ -608,6 +660,7 @@
       position: absolute;
       bottom: 50px;
       margin-left: 15%;
+      z-index: 99;
 
       .percent {
         margin-top: 5px;

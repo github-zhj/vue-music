@@ -7,7 +7,9 @@ import axios from 'axios'
 import vantConfig from './vant.config'
 import elementConfig from './element.config';
 import 'element-ui/lib/theme-chalk/index.css';
+import VueTouch from 'vue-touch'
 Vue.config.productionTip = false
+Vue.use(VueTouch, {name: 'v-touch'})
 Vue.use(VueAxios, axios)
 Vue.use(vantConfig)
 Vue.use(elementConfig)

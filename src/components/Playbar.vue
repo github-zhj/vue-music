@@ -24,6 +24,7 @@
             this.MusicImg = this.messageString.pir
             this.MusicName = this.messageString.name
             this.MusicID = this.messageString.id
+            this.MusicTitle = this.messageString.title
         },
         mounted() {
             this.$nextTick(() => {
@@ -31,7 +32,7 @@
                     this.$refs.play.currentTime = this.time.time
                 }
             })
-            
+
         },
         methods: {
             MusicClick() {
@@ -41,6 +42,7 @@
                         query: {
                             id: this.MusicID,
                             pir: this.MusicImg,
+                            title:this.MusicTitle
                         }
                     });
                 }
@@ -48,6 +50,7 @@
 
             updateTime(e) {
                 this.$store.commit("playbarTime", {
+                    title: this.MusicTitle,
                     time: e.target.currentTime,
                     id: this.MusicID
                 })
@@ -55,7 +58,7 @@
 
 
         },
-        
+
         computed: {
             ...mapState({
                 messageString: state => state.messageString
